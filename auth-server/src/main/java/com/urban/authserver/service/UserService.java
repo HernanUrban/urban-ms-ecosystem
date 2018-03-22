@@ -1,12 +1,14 @@
 package com.urban.authserver.service;
 
 
+import com.urban.authserver.converter.UserResponseConverter;
 import com.urban.authserver.domain.User;
+import com.urban.authserver.domain.UserType;
+import com.urban.authserver.dto.NewUserRequest;
+import com.urban.authserver.dto.UserResponse;
 import com.urban.authserver.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ import javax.security.auth.login.AccountException;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepo userRepo;
@@ -24,40 +26,39 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Optional<User> account = userRepo.findByUsername(s);
-        if (account.isPresent()) {
-            return account.get();
-        } else {
-            throw new UsernameNotFoundException(String.format("Username[%s] not found", s));
-        }
-    }
+    @Autowired
+    private UserResponseConverter userConverter;
 
-    public User findAccountByUsername(String username) throws UsernameNotFoundException {
+
+    public UserResponse findByUsername(String username) throws UsernameNotFoundException {
         Optional<User> account = userRepo.findByUsername(username);
         if (account.isPresent()) {
-            return account.get();
+            return userConverter.convert(account.get());
         } else {
             throw new UsernameNotFoundException(String.format("Username[%s] not found", username));
         }
-
     }
 
-    public User create(User user) throws AccountException {
-        if (userRepo.countByUsername(user.getUsername()) == 0) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            return userRepo.save(user);
+    public UserResponse create(NewUserRequest userRequest, UserType type) throws AccountException {
+        if (!userRepo.findByUsername(userRequest.getUsername()).isPresent()) {
+            User user = new User();
+            user.grantAuthority("ROLE_" + type.name());
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            user.setEmail(userRequest.getEmail());
+            user.setFirstName(userRequest.getFirstName());
+            user.setLastName(userRequest.getLastName());
+            user.setUsername(userRequest.getUsername());
+            return userConverter.convert(userRepo.save(user));
         } else {
-            throw new AccountException(String.format("Username[%s] already exists.", user.getUsername()));
+            throw new AccountException(String.format("Username[%s] already exists.", userRequest.getUsername()));
         }
     }
 
-    @Transactional // To successfully remove the date @Transactional annotation must be added
+    @Transactional
     public void deleteCurrentUser() throws UsernameNotFoundException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = findAccountByUsername(username);
-        userRepo.deleteAccountById(user.getId());
-
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username[%s] not found", username)));
+        userRepo.deleteById(user.getId());
     }
 }

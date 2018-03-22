@@ -17,6 +17,7 @@ public class AuthServerApplication {
         SpringApplication.run(AuthServerApplication.class, args);
     }
 
+    //H2 for demo purposes.
     @Bean
     @Qualifier("mainDataSource")
     public DataSource dataSource(){
@@ -27,9 +28,4 @@ public class AuthServerApplication {
         return db;
     }
 
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 }

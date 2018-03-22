@@ -1,6 +1,9 @@
 package com.urban.authserver.controller;
 
 import com.urban.authserver.domain.User;
+import com.urban.authserver.domain.UserType;
+import com.urban.authserver.dto.NewUserRequest;
+import com.urban.authserver.dto.UserResponse;
 import com.urban.authserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,18 +23,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(path = "/me", produces = "application/json")
-    public User me() {
+    public ResponseEntity<UserResponse> me() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findAccountByUsername(username);
+        return new ResponseEntity<>(userService.findByUsername(username), HttpStatus.OK);
     }
 
     @PostMapping(path = "/create", produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody User user) {
+    public ResponseEntity<?> create(@RequestBody NewUserRequest user) {
         try {
-            user.grantAuthority("ROLE_USER");
             return new ResponseEntity<Object>(
-                    userService.create(user), HttpStatus.OK);
+                    userService.create(user, UserType.USER), HttpStatus.CREATED);
         } catch (AccountException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

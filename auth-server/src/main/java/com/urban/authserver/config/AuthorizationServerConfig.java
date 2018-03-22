@@ -1,6 +1,7 @@
 package com.urban.authserver.config;
 
 
+import com.urban.authserver.security.DefaultUserDetailsService;
 import com.urban.authserver.security.SecretKeyProvider;
 import com.urban.authserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserService();
+        return new DefaultUserDetailsService();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .resourceIds(resourceId)
                 .accessTokenValiditySeconds(accessTokenValiditySeconds)
                 .refreshTokenValiditySeconds(refreshTokenValiditySeconds)
-                .and()
+                    .and()
                 .withClient("trusted-app")
                 .authorizedGrantTypes("client_credentials", "password", "refresh_token")
                 .authorities("ROLE_TRUSTED_CLIENT")
@@ -89,7 +90,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .accessTokenValiditySeconds(accessTokenValiditySeconds)
                 .refreshTokenValiditySeconds(refreshTokenValiditySeconds)
                 .secret("secret")
-                .and()
+                    .and()
                 .withClient("register-app")
                 .authorizedGrantTypes("client_credentials")
                 .authorities("ROLE_REGISTER")
