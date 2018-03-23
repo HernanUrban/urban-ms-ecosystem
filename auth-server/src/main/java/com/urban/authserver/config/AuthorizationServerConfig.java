@@ -86,7 +86,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes("client_credentials", "password", "refresh_token")
                 .authorities("ROLE_TRUSTED_CLIENT")
                 .scopes("read", "write")
-                .resourceIds(resourceId)
+                .resourceIds(resourceId, "urban-service")
                 .accessTokenValiditySeconds(accessTokenValiditySeconds)
                 .refreshTokenValiditySeconds(refreshTokenValiditySeconds)
                 .secret("secret")
