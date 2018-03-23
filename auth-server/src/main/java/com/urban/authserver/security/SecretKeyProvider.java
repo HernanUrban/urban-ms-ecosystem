@@ -22,7 +22,8 @@ public class SecretKeyProvider {
     private KeyPair getKeyPair() throws
             KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
-        FileInputStream is = new FileInputStream("urbankeystore.jks");
+        FileInputStream is = new FileInputStream(getClass().getClassLoader().getResource
+            ("security/urbankeystore.jks").getFile());
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, "Spassword".toCharArray());
@@ -31,13 +32,8 @@ public class SecretKeyProvider {
 
         Key key = keystore.getKey(alias, "Kpassword".toCharArray());
         if (key instanceof PrivateKey) {
-            // Get certificate of public key
             Certificate cert = keystore.getCertificate(alias);
-
-            // Get public key
             PublicKey publicKey = cert.getPublicKey();
-
-            // Return a key pair
             return new KeyPair(publicKey, (PrivateKey) key);
         } else throw new UnrecoverableKeyException();
     }
