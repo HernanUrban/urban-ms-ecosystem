@@ -1,0 +1,19 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/HernanUrban/ecosystem-configs.git
+          clone-on-start: true
+
+security:
+  user:
+    name: admin-urban
+    password: s3cr3t
+
+#Install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
+encrypt:
+  key: s3cr3tworld
