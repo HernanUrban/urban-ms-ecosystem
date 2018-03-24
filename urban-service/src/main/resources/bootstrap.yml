@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: urban-service
+  cloud:
+    config:
+      profile: dev
+      enabled: true
+      uri: http://localhost:8888
+      username: admin-urban
+      password: s3cr3t

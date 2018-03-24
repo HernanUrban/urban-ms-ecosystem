@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: auth-server
+  cloud:
+    config:
+      profile: dev
+      enabled: true
+      uri: http://localhost:8888
+      username: admin-urban
+      password: s3cr3t
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

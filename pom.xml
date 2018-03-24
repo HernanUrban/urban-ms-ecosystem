@@ -11,6 +11,8 @@
     <modules>
         <module>auth-server</module>
         <module>urban-service</module>
+		<module>config-service</module>
+		<module>discovery-service</module>
     </modules>
 
 </project>

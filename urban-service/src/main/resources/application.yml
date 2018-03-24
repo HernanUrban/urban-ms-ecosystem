@@ -1,0 +1,14 @@
+server:
+  port: 8090
+auth:
+  server:
+    url: http://localhost:8091/oauth/check_token
+    clientId: trusted-app
+    clientsecret: secret
+    resourceId: urban-service
+
+info:
+  app:
+    name: urban-service
+    description: Urban Service API - Resource Server
+    version: @project.version@
