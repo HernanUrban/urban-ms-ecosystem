@@ -2,6 +2,8 @@ server:
   port: 8888
 
 spring:
+  application:
+    name: config-service
   cloud:
     config:
       server:
@@ -26,3 +28,10 @@ info:
   app:
     name: config-service
     description: Configuration Service API
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

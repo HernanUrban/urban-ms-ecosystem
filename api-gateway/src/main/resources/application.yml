@@ -26,14 +26,14 @@ zuul:
 
 ribbon:
   OkToRetryOnAllOperations: true
-#  eureka:
-#    enabled: true
-#  client:
-#    serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-#    fetchRegistry: true
-#  instance:
-#    preferIpAddress: true
+  eureka:
+    enabled: true
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    fetchRegistry: true
+  instance:
+    preferIpAddress: true
 
 #Will start the gateway server @8080
 server:
@@ -46,7 +46,6 @@ eureka:
       registerWithEureka: true
       fetchRegistry: true
   instance:
-    hostname: localhost
     leaseRenewalIntervalInSeconds: 10
 
 hystrix:
