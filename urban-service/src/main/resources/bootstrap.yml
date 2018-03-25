@@ -7,6 +7,11 @@ spring:
     config:
       profile: dev
       enabled: true
+      failFast: true
       uri: ${CONFIG_URI:http://localhost:8888}
       username: admin-urban
       password: s3cr3t
+      retry:
+        initialInterval: ${CLOUD_CONFIG_INITIAL_INTERVAL:6000}
+        maxInterval: ${CLOUD_CONFIG_MAX_INTERVAL:6000}
+        maxAttempts: ${CLOUD_CONFIG_MAX_ATTEMPTS:20}

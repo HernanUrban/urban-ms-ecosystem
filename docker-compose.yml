@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.0"
 services:
   config-service:
     image: urban/config-service
@@ -15,15 +15,15 @@ services:
     environment:
       CONFIG_URI: http://config-service:8888
     depends_on:
-      - "config-service"
+      - config-service
   auth-service:
     image: urban/auth-server
     container_name: auth-server
     ports:
       - 9090:9090
     depends_on:
-      - "config-service"
-      - "discovery-service"
+      - config-service
+      - discovery-service
     environment:
       EUREKA_URI: http://discovery-service:8761/eureka
       CONFIG_URI: http://config-service:8888
@@ -37,8 +37,8 @@ services:
       CONFIG_URI: http://config-service:8888
       OAUTH_URI: http://auth-server:9090/oauth/check_token
     depends_on:
-      - "config-service"
-      - "discovery-service"
+      - config-service
+      - discovery-service
   api-gateway:
     image: urban/api-gateway
     container_name: api-gateway
@@ -48,4 +48,5 @@ services:
       EUREKA_URI: http://discovery-service:8761/eureka/
       RIBBON_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
-      - "discovery-service"
+      - discovery-service
+
