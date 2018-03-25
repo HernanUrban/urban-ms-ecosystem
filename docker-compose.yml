@@ -1,49 +1,51 @@
 version: "2.1"
 services:
-  auth-service:
-    image: urban/auth-server
-    container_name: auth-server
-    ports:
-      - 9090:9090
-    depends_on:
-      - config-service
-      - discovery-service
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
-      EUREKA_URI: http://discovery-service:8761/eureka
-      SPRING_CLOUD_CONFIG_URI: http://discovery-service:8888
   config-service:
     image: urban/config-service
     container_name: config-service
     ports:
       - 8888:8888
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
       EUREKA_URI: http://discovery-service:8761/eureka
-      SPRING_CLOUD_CONFIG_URI: http://discovery-service:8888
   discovery-service:
     image: urban/discovery-service
     container_name: discovery-service
     ports:
       - 8761:8761
+    environment:
+      CONFIG_URI: http://config-service:8888
+    depends_on:
+      - "config-service"
+  auth-service:
+    image: urban/auth-server
+    container_name: auth-server
+    ports:
+      - 9090:9090
+    depends_on:
+      - "config-service"
+      - "discovery-service"
+    environment:
+      EUREKA_URI: http://discovery-service:8761/eureka
+      CONFIG_URI: http://config-service:8888
   urban-service:
     image: urban/urban-service
     container_name: urban-service
     ports:
       - 8090:8090
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
       EUREKA_URI: http://discovery-service:8761/eureka
-      SPRING_CLOUD_CONFIG_URI: http://discovery-service:8888
+      CONFIG_URI: http://config-service:8888
+      OAUTH_URI: http://auth-server:9090/oauth/check_token
     depends_on:
-      - config-service
-      - discovery-service
+      - "config-service"
+      - "discovery-service"
   api-gateway:
     image: urban/api-gateway
     container_name: api-gateway
     ports:
       - 8080:8080
     environment:
+      EUREKA_URI: http://discovery-service:8761/eureka/
       RIBBON_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
-      - discovery-service
+      - "discovery-service"

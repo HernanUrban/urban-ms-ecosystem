@@ -7,7 +7,7 @@ spring:
     config:
       profile: dev
       enabled: true
-      uri: http://localhost:8888
+      uri: ${CONFIG_URI:http://localhost:8888}
       username: admin-urban
       password: s3cr3t
 

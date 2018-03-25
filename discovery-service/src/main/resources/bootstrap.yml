@@ -6,7 +6,7 @@ spring:
   cloud:
     config:
       profile: dev
-      enabled: false
-      uri: http://localhost:8888
+      enabled: true
+      uri: ${CONFIG_URI:http://localhost:8888}
       username: admin-urban
       password: s3cr3t

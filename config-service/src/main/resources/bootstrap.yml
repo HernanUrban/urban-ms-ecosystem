@@ -17,3 +17,13 @@ security:
 #Install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
 encrypt:
   key: s3cr3tworld
+
+management:
+  security:
+    enabled: false
+
+info:
+  app:
+    name: config-service
+    description: Configuration Service API
+    version: @project.version@
