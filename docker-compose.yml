@@ -19,7 +19,8 @@ services:
       CONFIG_URI: http://config-service:8888
     restart: always
     depends_on:
-      - config-service
+      config-service:
+        condition: service_healthy
   auth-server:
     build: auth-server
     image: urban/auth-server
@@ -28,7 +29,8 @@ services:
       - 9090:9090
     restart: always
     depends_on:
-      - config-service
+      config-service:
+        condition: service_healthy
     environment:
       EUREKA_URI: http://discovery-service:8761/eureka
       CONFIG_URI: http://config-service:8888
@@ -44,7 +46,8 @@ services:
       OAUTH_URI: http://auth-server:9090/oauth/check_token
     restart: always
     depends_on:
-      - config-service
+      config-service:
+        condition: service_healthy
   api-gateway:
     build: api-gateway
     image: urban/api-gateway
@@ -52,8 +55,10 @@ services:
     ports:
       - 8080:8080
     environment:
-      EUREKA_URI: http://discovery-service:8761/eureka/
-      RIBBON_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
+      EUREKA_URI: http://discovery-service:8761/eureka
+      OAUTH_HOST: http://auth-server:9090
+      RESOURCES_HOST: http://urban-service:8090
     restart: always
     depends_on:
-      - discovery-service
+      config-service:
+        condition: service_healthy
