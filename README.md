@@ -1,16 +1,17 @@
 # Microservices Ecosystem
 
-## What we have
+### What we have
 ![Components Diagram](https://github.com/HernanUrban/urban-ms-ecosystem/blob/master/Zuul%20as%20API%20GW.png)
 
 
-## How to Run the system:
-Build and install docker images:
+### How to Run the system
+Build and install docker images:  
 ``$ ./mvnw clean install -DskipTests dockerfile:build``
+
 Run via docker compose:
 ``$ docker-compose up``
 
-## What's next?
+### What's next?
 We know that auth server and resource servers are separated services in the ecosystem, but we have the api gateway as a proxy and filter the requests/responses.
 Now let's give it a try...
 - create a user.
@@ -43,7 +44,7 @@ Response:
 ```
 Note: We've created our own user. We can generate a token with the credentials.
 
-3. Genereate a token to hit a secure resource
+3. Create a token to hit a secure resource
 ``$ curl -u trusted-app:secret -X POST http://localhost:8080/api/auth/oauth/token -d username=hurban -d password=test123 -d grant_type=password``
 
 Response:
