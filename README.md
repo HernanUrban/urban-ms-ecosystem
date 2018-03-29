@@ -53,7 +53,8 @@ Response:
 ```
 Note: Now we have the user token :)
 4. Hit a secure resource endpoint
-``$ curl -u trusted-app:secret http://localhost:8080/api/resources/user -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR 5cCI6IkpXVCJ9.eyJhdWQiOlsidXJiYW4tc2VydmljZSIsImF1dGhfc2VydmVyIl0sInVzZXJfbmFtZSI6Imh1cmJhbiIsInNjb3BlIjpbInJlYWQiLCJ3c ml0ZSJdLCJleHAiOjE1MjIzNzYwODAsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiI2MTg3MzAzZi1jNWE5LTQ0NDMtYTA5Ny1iZDk2NWU1 NWRhN2YiLCJjbGllbnRfaWQiOiJ0cnVzdGVkLWFwcCJ9.WXay7rL9BhPHIxdce-Tmq4dELh16OirXAlSGAGZuVA8"``
+``$ curl -u trusted-app:secret http://localhost:8080/api/resources/user -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR 5cCI6IkpXVCJ9.eyJhdWQiOlsidXJiYW4tc2VydmljZSIsImF1dGhfc2VydmVyIl0sInVzZXJfbmFtZSI6Imh1cmJhbiIsInNjb3BlIjpbInJlYWQiLCJ3c ml0ZSJdLCJleHAiOjE1MjIzNzYwODAsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiI2MTg3MzAzZi1jNWE5LTQ0NDMtYTA5Ny1iZDk2NWU1 NWRhN2YiLCJjbGllbnRfaWQiOiJ0cnVzdGVkLWFwcCJ9.WXay7rL9BhPHIxdce-Tmq4dELh16OirXAlSGAGZuVA8"``  
+
 Response:
 ```
 Hello hurban
