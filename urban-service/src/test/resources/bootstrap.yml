@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: urban-service
+  cloud:
+    config:
+      profile: test
+      enabled: false
+eureka:
+  client:
+    enabled: false

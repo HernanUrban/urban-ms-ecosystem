@@ -1,14 +1,39 @@
-#Will start the gateway server @8080
 server:
   port: 8080
 
-spring:
-  profiles:
-    active: dev
-  application:
-    name: api-gateway
+zuul:
+  prefix: /api
+  routes:
+    auth:
+      path: /auth/**
+      add-proxy-headers: true
+      sensitiveHeaders: #This is required to fw sensitive headers as Authorization
+      serviceId: auth-server
+    api:
+      path: /resources/**
+      add-proxy-headers: true
+      sensitiveHeaders:
+      serviceId: urban-service
+  host:
+    socket-timeout-millis: 30000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
 
 endpoints:
+  routes:
+    sensitive: false
   info:
     enabled: true
 info:
@@ -16,41 +41,3 @@ info:
     name: api-gateway
     description: API Gateway
     version: @project.version@
-
-zuul:
-  prefix: /api
-  routes:
-    auth:
-      path: /auth/**
-      url: ${OAUTH_HOST:http://localhost:9090}
-      add-proxy-headers: true
-#      serviceId: auth-server
-    api:
-      path: /resources/**
-      url: ${RESOURCES_HOST:http://localhost:8090}
-      add-proxy-headers: true
-#      serviceId: urban-service
-
-#ribbon:
-#  OkToRetryOnAllOperations: true
-#  eureka:
-#    enabled: true
-#  client:
-#    serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-#    fetchRegistry: true
-#  instance:
-#    preferIpAddress: true
-
-eureka:
-  client:
-    serviceUrl:
-      defaultzone: ${EUREKA_URI:http://localhost:8761/eureka}
-#      registerWithEureka: true
-#      fetchRegistry: true
-#  instance:
-#    leaseRenewalIntervalInSeconds: 10
-
-management:
-  security:
-    enabled: false

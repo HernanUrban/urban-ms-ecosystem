@@ -6,17 +6,18 @@ services:
     container_name: config-service
     restart: always
     ports:
-      - 8888:8888
+      - 8888
     environment:
-      EUREKA_URI: http://discovery-service:8761/eureka
+      EUREKA_URI: http://discovery-service:8761/eureka/
   discovery-service:
     build: discovery-service
     image: urban/discovery-service
     container_name: discovery-service
     ports:
-      - 8761:8761
+      - 8761
     environment:
       CONFIG_URI: http://config-service:8888
+      EUREKA_URI: http://discovery-service:8761/eureka/
     restart: always
     depends_on:
       config-service:
@@ -26,22 +27,22 @@ services:
     image: urban/auth-server
     container_name: auth-server
     ports:
-      - 9090:9090
+      - 9090
     restart: always
     depends_on:
       config-service:
         condition: service_healthy
     environment:
-      EUREKA_URI: http://discovery-service:8761/eureka
+      EUREKA_URI: http://discovery-service:8761/eureka/
       CONFIG_URI: http://config-service:8888
   urban-service:
     build: urban-service
     image: urban/urban-service
     container_name: urban-service
     ports:
-      - 8090:8090
+      - 8090
     environment:
-      EUREKA_URI: http://discovery-service:8761/eureka
+      EUREKA_URI: http://discovery-service:8761/eureka/
       CONFIG_URI: http://config-service:8888
       OAUTH_URI: http://auth-server:9090/oauth/check_token
     restart: always
@@ -55,10 +56,8 @@ services:
     ports:
       - 8080:8080
     environment:
-      EUREKA_URI: http://discovery-service:8761/eureka
-      OAUTH_HOST: http://auth-server:9090
-      RESOURCES_HOST: http://urban-service:8090
+      EUREKA_URI: http://discovery-service:8761/eureka/
     restart: always
     depends_on:
-      config-service:
+      discovery-service:
         condition: service_healthy

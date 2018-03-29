@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: auth-server
+  cloud:
+    config:
+      profile: test
+      enabled: false
+eureka:
+  client:
+    enabled: false

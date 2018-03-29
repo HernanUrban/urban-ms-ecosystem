@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      profile: test
+      enabled: false
+eureka:
+  client:
+    enabled: false

@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: discovery-service
+  cloud:
+    config:
+      profile: dev
+      enabled: false
