@@ -8,7 +8,7 @@
 Build and install docker images:  
 ``$ ./mvnw clean install -DskipTests dockerfile:build``
 
-Run via docker compose:
+Run via docker compose:  
 ``$ docker-compose up``
 
 ### What's next?
