@@ -1,5 +1,14 @@
 version: "2.1"
 services:
+  kafka-service:
+    image: spotify/kafka
+    container_name: kafka-service
+    ports:
+      - 2181:2181
+      - 9092:9092
+    environment:
+      ADVERTISED_HOST: localhost
+      ADVERTISED_PORT: 9092
   config-service:
     build: config-service
     image: urban/config-service

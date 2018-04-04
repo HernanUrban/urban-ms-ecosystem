@@ -1,0 +1,61 @@
+server:
+  port: 8785
+
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer:
+    topic: notification
+    group: notification-event-group
+    auto-offset-reset: earliest
+
+spring:
+  mail:
+    host: localhost #For demo purposes you can use fakeSMTP
+    port: 25 # SMTP server port
+    username: # Login used for authentication
+    password: # Password for the given login
+    protocol: smtp
+    defaultEncoding: UTF-8 # Default message encoding
+  #mongodb
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: notifications
+
+notification:
+  sender:
+   email: no-reply@urban-ms-ecosystem.com
+  template:
+    mapping:
+      CREATE_USER: verifyEmailTemplate, welcomeTemplate
+      UPDATE_USER: userDataUpdatedTemplate
+      EMAIL_CHANGE: emailUpdatedTemplate
+  subject:
+    mapping:
+      verifyEmailTemplate: Email Verification
+      welcomeTemplate: Welcome Aboard!
+      userDataUpdatedTemplate: Your Account Info Has changed
+      emailUpdatedTemplate: Email Account Has Changed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
