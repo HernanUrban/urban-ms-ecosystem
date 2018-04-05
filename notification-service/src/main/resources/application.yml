@@ -10,10 +10,16 @@ kafka:
 
 spring:
   mail:
-    host: ${MAIL_HOST:localhost} #For demo purposes you can use fakeSMTP
-    port: ${MAIL_PORT:25} # SMTP server port
-    username: ${MAIL_USERNAME:}# Login used for authentication
-    password: ${MAIL_PASSWORD:}# Password for the given login
+    host: ${MAIL_HOST:localhost} #For demo purposes use fakeSMTP (http://nilhcem.com/FakeSMTP/)
+    port: ${MAIL_PORT:25}
+    username: ${MAIL_USERNAME:user}
+    password: ${MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
     protocol: ${MAIL_PROTOCOL:smtp}
     defaultEncoding: UTF-8 # Default message encoding
   #mongodb
@@ -37,3 +43,4 @@ notification:
       welcomeTemplate: Welcome Aboard!
       userDataUpdatedTemplate: Your Account Info Has changed
       emailUpdatedTemplate: Email Account Has Changed
+

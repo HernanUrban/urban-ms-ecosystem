@@ -94,8 +94,8 @@ services:
       KAFKA_SERVERS: kafka-service:9092
       MAIL_HOST: smtp.mailtrap.io
       MAIL_PORT: 2525
-      MAIL_USERNAME: 521c340c7258bf
-      MAIL_PASSWORD: d5210cb24cedba
+      MAIL_USERNAME: f8e670ab0a142f
+      MAIL_PASSWORD: 868ad753cfd1ef
     restart: always
     links:
       - mongodb
