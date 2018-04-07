@@ -1,14 +1,18 @@
 version: "2.1"
 services:
-  kafka-service:
-    image: spotify/kafka
-    container_name: kafka-service
+  kafkaserver:
+    image: spotify/kafka:latest
+    container_name: kafkaserver
+    hostname: kafkaserver
     ports:
       - 2181:2181
       - 9092:9092
     environment:
-      ADVERTISED_HOST: localhost
+      ADVERTISED_HOST: 192.168.99.100
       ADVERTISED_PORT: 9092
+    expose:
+      - 9092
+      - 2181
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -91,7 +95,7 @@ services:
     environment:
       MONGO_HOST: mongodb
       MONGO_PORT: 27017
-      KAFKA_SERVERS: kafka-service:9092
+      KAFKA_SERVERS: kafkaserver:9092
       MAIL_HOST: smtp.mailtrap.io
       MAIL_PORT: 2525
       MAIL_USERNAME: f8e670ab0a142f
@@ -99,10 +103,7 @@ services:
     restart: always
     links:
       - mongodb
-      - kafka-service
-    depends_on:
-      discovery-service:
-        condition: service_healthy
+      - kafkaserver
 volumes:
   mongodb:
   mongodb_config:

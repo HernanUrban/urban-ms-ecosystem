@@ -4,8 +4,8 @@ server:
 kafka:
   bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
   consumer:
-    topic: notification
-    group: notification-event-group
+    topic: ${KAFKA_TOPIC:notifications}
+    group: notifications-event-group
     auto-offset-reset: earliest
 
 spring:
@@ -43,4 +43,3 @@ notification:
       welcomeTemplate: Welcome Aboard!
       userDataUpdatedTemplate: Your Account Info Has changed
       emailUpdatedTemplate: Email Account Has Changed
-
