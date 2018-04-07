@@ -1,5 +1,30 @@
 version: "2.1"
 services:
+  kafkaserver:
+    image: spotify/kafka:latest
+    container_name: kafkaserver
+    hostname: kafkaserver
+    ports:
+      - 2181:2181
+      - 9092:9092
+    environment:
+      ADVERTISED_HOST: 192.168.99.100
+      ADVERTISED_PORT: 9092
+    expose:
+      - 9092
+      - 2181
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_DATA_DIR: /data/db
+      MONGO_LOG_DIR: /data/logs
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    ports:
+      - 27017:27017
+    command: mongod
   config-service:
     build: config-service
     image: urban/config-service
@@ -61,3 +86,24 @@ services:
     depends_on:
       discovery-service:
         condition: service_healthy
+  notification-service:
+    build: notification-service
+    image: urban/notification-service
+    container_name: notification-service
+    ports:
+      - 8785:8785
+    environment:
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      KAFKA_SERVERS: kafkaserver:9092
+      MAIL_HOST: smtp.mailtrap.io
+      MAIL_PORT: 2525
+      MAIL_USERNAME: f8e670ab0a142f
+      MAIL_PASSWORD: 868ad753cfd1ef
+    restart: always
+    links:
+      - mongodb
+      - kafkaserver
+volumes:
+  mongodb:
+  mongodb_config:

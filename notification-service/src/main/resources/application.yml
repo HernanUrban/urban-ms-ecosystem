@@ -1,0 +1,45 @@
+server:
+  port: 8785
+
+kafka:
+  bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
+  consumer:
+    topic: ${KAFKA_TOPIC:notifications}
+    group: notifications-event-group
+    auto-offset-reset: earliest
+
+spring:
+  mail:
+    host: ${MAIL_HOST:localhost} #For demo purposes use fakeSMTP (http://nilhcem.com/FakeSMTP/)
+    port: ${MAIL_PORT:25}
+    username: ${MAIL_USERNAME:user}
+    password: ${MAIL_PASSWORD:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: ${MAIL_PROTOCOL:smtp}
+    defaultEncoding: UTF-8 # Default message encoding
+  #mongodb
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: notifications
+
+notification:
+  sender:
+   email: no-reply@urban-ms-ecosystem.com
+  template:
+    mapping:
+      CREATE_USER: verifyEmailTemplate, welcomeTemplate
+      UPDATE_USER: userDataUpdatedTemplate
+      EMAIL_CHANGE: emailUpdatedTemplate
+  subject:
+    mapping:
+      verifyEmailTemplate: Email Verification
+      welcomeTemplate: Welcome Aboard!
+      userDataUpdatedTemplate: Your Account Info Has changed
+      emailUpdatedTemplate: Email Account Has Changed

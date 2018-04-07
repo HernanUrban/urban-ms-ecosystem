@@ -100,7 +100,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     /**
-     * Jason Web Token store.
+     * JWT store.
      *
      * @return
      */
