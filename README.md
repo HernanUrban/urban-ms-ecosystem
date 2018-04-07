@@ -1,7 +1,7 @@
 # Microservices Ecosystem
 
 ### What we have
-![Components Diagram](https://github.com/HernanUrban/urban-ms-ecosystem/blob/master/Zuul%20as%20API%20GW.png)
+![Components Diagram](https://github.com/HernanUrban/urban-ms-ecosystem/blob/master/ecosystem.png)
 
 
 ### How to Run the system
