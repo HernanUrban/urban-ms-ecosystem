@@ -95,7 +95,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes("client_credentials")
                 .authorities("ROLE_REGISTER")
                 .scopes("read")
-                .resourceIds(resourceId)
+                .resourceIds(resourceId, "urban-service")
                 .secret("secret");
     }
 
