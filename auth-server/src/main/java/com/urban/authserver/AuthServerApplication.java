@@ -19,7 +19,7 @@ public class AuthServerApplication {
     }
 
     //H2 for demo purposes.
-    @Bean
+/*    @Bean
     @Qualifier("mainDataSource")
     public DataSource dataSource(){
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
@@ -27,6 +27,6 @@ public class AuthServerApplication {
             .setType(EmbeddedDatabaseType.H2)
             .build();
         return db;
-    }
+    }*/
 
 }
