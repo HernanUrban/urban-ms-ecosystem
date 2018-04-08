@@ -15,6 +15,11 @@ spring:
   h2:
     console:
       enabled: true
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
+      topic: ${KAFKA_TOPIC:notification}
+      retries: 2
 
 eureka:
   client:

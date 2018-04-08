@@ -44,6 +44,7 @@ public class ResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers(HttpMethod.OPTIONS).permitAll()
         .antMatchers("/users/me").hasAnyRole("USER", "ADMIN")
         .antMatchers("/users/create").permitAll()
+        .antMatchers("/users/verify").permitAll()
         .anyRequest()
         .authenticated();
   }

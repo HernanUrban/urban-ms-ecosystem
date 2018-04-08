@@ -1,5 +1,6 @@
 package com.urban.userservice.controller;
 
+import com.urban.userservice.domain.User;
 import com.urban.userservice.domain.UserType;
 import com.urban.userservice.dto.NewUserRequest;
 import com.urban.userservice.dto.UserResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(path = "/users")
@@ -53,5 +55,11 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verify(@RequestParam("token") String token) {
+        userService.verifyUserEmail(token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
