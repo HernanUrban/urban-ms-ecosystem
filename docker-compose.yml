@@ -84,7 +84,7 @@ services:
       EUREKA_URI: http://discovery-service:8761/eureka/
     restart: always
     depends_on:
-      discovery-service:
+      config-service:
         condition: service_healthy
   notification-service:
     build: notification-service
