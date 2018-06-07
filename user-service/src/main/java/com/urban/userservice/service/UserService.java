@@ -7,7 +7,10 @@ import com.urban.userservice.domain.VerificationToken;
 import com.urban.userservice.dto.Event;
 import com.urban.userservice.dto.NewUserRequest;
 import com.urban.userservice.dto.UserResponse;
+import com.urban.userservice.error.DefaultErrorCodes;
+import com.urban.userservice.error.UserNotFoundError;
 import com.urban.userservice.error.UserServiceError;
+import com.urban.userservice.error.UserValidationError;
 import com.urban.userservice.event.EventPublisher;
 import com.urban.userservice.repo.UserRepo;
 import com.urban.userservice.repo.VerificationTokenRepo;
@@ -43,18 +46,29 @@ public class UserService {
   @Autowired
   private UserResponseConverter userConverter;
 
+  @Value("${activate.endpoint.url}")
+  private String activationUrl;
 
-  public UserResponse findByUsername(String username) throws UsernameNotFoundException {
+  public UserResponse findById(Long id) throws UserValidationError {
+    Optional<User> user = userRepo.findById(id);
+    if (user.isPresent()) {
+      return userConverter.convert(user.get());
+    } else {
+      throw new UserValidationError(DefaultErrorCodes.INVALID_ARGUMENTS, String.format("User [%d] not found", id));
+    }
+  }
+
+  public UserResponse findByUsername(String username) throws UsernameNotFoundException, UserValidationError {
     Optional<User> account = userRepo.findByUsername(username);
     if (account.isPresent()) {
       return userConverter.convert(account.get());
     } else {
-      throw new IllegalArgumentException(String.format("Username[%s] not found",
+      throw new UserValidationError(String.format("Username[%s] not found",
           username));
     }
   }
 
-  public UserResponse create(NewUserRequest userRequest, UserType type) throws AccountException {
+  public UserResponse create(NewUserRequest userRequest, UserType type) throws UserServiceError {
     UserResponse userResponse = null;
     String token = null;
     if (!userRepo.findByUsername(userRequest.getUsername()).isPresent()) {
@@ -69,7 +83,7 @@ public class UserService {
       token = createVerificationToken(newUser);
       userResponse = userConverter.convert(newUser);
     } else {
-      throw new IllegalArgumentException(String.format("Username[%s] already exists.", userRequest
+      throw new UserValidationError(DefaultErrorCodes.INVALID_ARGUMENTS, String.format("Username[%s] already exists.", userRequest
           .getUsername()));
     }
     publisher.send(new Event().setUserId(userResponse.getId().toString())
@@ -78,16 +92,15 @@ public class UserService {
                               .setNotificationType("create_user")
                               .setResourceId("user-service")
                               .addAttribute("first_name", userRequest.getFirstName())
-                              .addAttribute("action_url",
-                                  "http://localhost:9595/users/verify?token=" + token));
+                              .addAttribute("action_url", String.format(activationUrl, token)));
     return userResponse;
   }
 
   @Transactional
-  public void deleteCurrentUser() throws UsernameNotFoundException {
+  public void deleteCurrentUser() throws UserNotFoundError {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = userRepo.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format("Username[%s] not found",
+        .orElseThrow(() -> new UserNotFoundError(DefaultErrorCodes.ENTITY_NOT_FOUND, String.format("Username[%s] not found",
             username)));
     userRepo.deleteById(user.getId());
   }
@@ -121,7 +134,7 @@ public class UserService {
     return tokenRepo.findByToken(token);
   }
 
-  public void verifyUserEmail(String token) {
+  public void verifyUserEmail(String token) throws UserServiceError {
     Optional<VerificationToken> vToken = getVerificationToken(token);
     if (!vToken.isPresent()) {
       throw new UserServiceError("Invalid Token!");

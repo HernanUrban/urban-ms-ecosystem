@@ -49,7 +49,7 @@ public class EventPublisher {
 
         @Override
         public void onFailure(Throwable ex) {
-          LOGGER.warn("Unable to deliver message='{}'", message, ex);
+          LOGGER.warn("Unable to deliver message='{}' cause '{}'", message, ex.getMessage());
         }
       });
     } catch (Exception e) {

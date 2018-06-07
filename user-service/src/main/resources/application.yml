@@ -2,7 +2,10 @@ server:
   port: 9595
 auth:
   server:
-    url: ${OAUTH_URI:http://localhost:9090/oauth/check_token}
+    url: ${OAUTH_URI:http://localhost:9090/oauth}
+    uri:
+      check: ${OAUTH_CHECK:/check_token}
+      token: ${OAUTH_TOKEN:/token}
     clientId: trusted-app
     clientsecret: secret
     resourceId: urban-service
@@ -11,7 +14,7 @@ spring:
     url: jdbc:h2:~/data/test;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9797;DB_CLOSE_DELAY=- 1;DB_CLOSE_ON_EXIT=FALSE
     driverClassName: org.h2.Driver
     username: sa
-    password:
+    password: test123
   h2:
     console:
       enabled: true
@@ -33,3 +36,7 @@ info:
     name: user-service
     description: User Service API
     version: @project.version@
+
+activate:
+  endpoint:
+    url: http://localhost:9595/verify?code=%s # Endpoint to activate the user.

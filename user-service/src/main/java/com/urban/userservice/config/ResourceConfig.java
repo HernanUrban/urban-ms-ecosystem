@@ -7,7 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration
     .EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration
@@ -19,13 +18,15 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 
 @Configuration
-@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableResourceServer
 public class ResourceConfig extends ResourceServerConfigurerAdapter {
 
   @Value("${auth.server.url}")
-  private String checkTokenUrl;
+  private String authServerUrl;
+
+  @Value("${auth.server.uri.check}")
+  private String checkTokenUri;
 
   @Value("${auth.server.clientId}")
   private String clientId;
@@ -41,9 +42,10 @@ public class ResourceConfig extends ResourceServerConfigurerAdapter {
     http.csrf().disable()
         .authorizeRequests()
         .antMatchers(HttpMethod.GET, "/health","/info").permitAll()
+        .antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
         .antMatchers(HttpMethod.OPTIONS).permitAll()
         .antMatchers("/users/me").hasAnyRole("USER", "ADMIN")
-        .antMatchers("/users/create").permitAll()
+        .antMatchers(HttpMethod.POST,"/users").permitAll()
         .antMatchers("/users/verify").permitAll()
         .anyRequest()
         .authenticated();
@@ -57,7 +59,7 @@ public class ResourceConfig extends ResourceServerConfigurerAdapter {
   @Bean
   public RemoteTokenServices remoteTokenServices() {
     final RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
-    remoteTokenServices.setCheckTokenEndpointUrl(checkTokenUrl);
+    remoteTokenServices.setCheckTokenEndpointUrl(authServerUrl + checkTokenUri);
     remoteTokenServices.setClientId(clientId);
     remoteTokenServices.setClientSecret(clientSecret);
     remoteTokenServices.setAccessTokenConverter(accessTokenConverter());

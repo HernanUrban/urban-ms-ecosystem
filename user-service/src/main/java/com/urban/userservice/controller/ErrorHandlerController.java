@@ -3,6 +3,9 @@ package com.urban.userservice.controller;
 import com.urban.userservice.error.DefaultErrorCodes;
 import com.urban.userservice.error.ErrorDescription;
 import javax.servlet.http.HttpServletRequest;
+
+import com.urban.userservice.error.UserServiceError;
+import com.urban.userservice.error.UserValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,12 +26,20 @@ public class ErrorHandlerController {
    *          the exception being handled.
    * @return an instance of ErrorDescription.
    */
-  @ExceptionHandler({ IllegalArgumentException.class, MethodArgumentNotValidException.class })
+  @ExceptionHandler({ UserValidationError.class, IllegalArgumentException.class, MethodArgumentNotValidException.class })
   public ResponseEntity<ErrorDescription> handleIllegalArgumentException(HttpServletRequest request,
                                                                          Exception exception) {
     ErrorDescription error =  ErrorDescription.buildError(DefaultErrorCodes.INVALID_ARGUMENTS,
         moduleName, exception, request);
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({UserServiceError.class })
+  public ResponseEntity<ErrorDescription> handleUserServiceError(HttpServletRequest request,
+                                                                 UserServiceError exception) {
+    ErrorDescription error =  ErrorDescription.buildError(exception.getErrorCode(),
+            moduleName, exception, request);
+    return new ResponseEntity<>(error, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler({Exception.class })
