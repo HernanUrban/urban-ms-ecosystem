@@ -1,6 +1,6 @@
 package com.urban.userservice.error;
 
-public class UserServiceError extends RuntimeException {
+public class UserServiceError extends Exception {
 
   private static final long serialVersionUID = 6357548932897618816L;
   private final int errorCode;

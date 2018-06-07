@@ -1,65 +1,80 @@
 package com.urban.userservice.controller;
 
-import com.urban.userservice.domain.User;
 import com.urban.userservice.domain.UserType;
 import com.urban.userservice.dto.NewUserRequest;
 import com.urban.userservice.dto.UserResponse;
+import com.urban.userservice.error.UserNotFoundError;
+import com.urban.userservice.error.UserServiceError;
+import com.urban.userservice.error.UserValidationError;
 import com.urban.userservice.service.UserService;
-import javax.security.auth.login.AccountException;
-import javax.validation.Valid;
+import io.swagger.annotations.*;
+import jdk.nashorn.internal.runtime.GlobalConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping(path = "/users")
+@Api(basePath = "/users", description = "User resources")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/{id}", produces = "application/json")
+    @ApiOperation(value = "Get a User",
+            notes = "Retrieves the User for a given account ID.\nAuthenticated user's role must be an Admin.",
+            response = UserResponse.class,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponse> user(@PathVariable(name = "id", required = true) Long id) throws UserValidationError {
+        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping(path = "/me", produces = "application/json")
-    public ResponseEntity<UserResponse> me() {
+    @ApiOperation(value = "Get my User", notes = "Retrieves the User for the authenticated user.",
+            response = UserResponse.class,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponse> me() throws UserValidationError {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return new ResponseEntity<>(userService.findByUsername(username), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/create", produces = "application/json")
-    public ResponseEntity<?> create(@Valid @RequestBody NewUserRequest user) {
-        try {
-            return new ResponseEntity<Object>(
-                    userService.create(user, UserType.USER), HttpStatus.CREATED);
-        } catch (AccountException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping(produces = "application/json")
+    @ApiOperation(value = "Create a User", notes = "Creates a new user.\nNo authentication is required.",
+            response = UserResponse.class,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody NewUserRequest user) throws UserServiceError {
+        return new ResponseEntity<>(
+                userService.create(user, UserType.USER), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping(path = "/delete", produces = "application/json")
-    public ResponseEntity<?> deleteUser() {
-        try {
-            userService.deleteCurrentUser();
-            return new ResponseEntity<Object>(HttpStatus.OK);
-        } catch (UsernameNotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
-        }
+    @ApiOperation(value = "Delete the User", notes = "Deletes the current user.",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteUser() throws UserNotFoundError {
+        userService.deleteCurrentUser();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<?> verify(@RequestParam("token") String token) {
-        userService.verifyUserEmail(token);
+    @ApiOperation(value = "Activate a User",
+            notes = "Activates the User.\nThis endpoint requires an activation code.\nNo authentication is required.",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> verify(@RequestParam("code") String code) throws UserServiceError {
+        userService.verifyUserEmail(code);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
