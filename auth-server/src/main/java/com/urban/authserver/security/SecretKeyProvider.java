@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -13,8 +12,7 @@ import java.security.cert.CertificateException;
 @Component
 public class SecretKeyProvider {
 
-    public String getKey() throws URISyntaxException,
-            KeyStoreException, IOException,
+    public String getKey() throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
         return new String(getKeyPair().getPublic().getEncoded(), "UTF-8");
     }
@@ -23,7 +21,7 @@ public class SecretKeyProvider {
             KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
         FileInputStream is = new FileInputStream(getClass().getClassLoader().getResource
-            ("security/urbankeystore.jks").getFile());
+            ("security/urbankeystore.jks").getFile().replaceAll("%20", " "));
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, "Spassword".toCharArray());

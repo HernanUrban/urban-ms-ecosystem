@@ -21,7 +21,7 @@ spring:
   kafka:
     producer:
       bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
-      topic: ${KAFKA_TOPIC:notification}
+      topic: ${KAFKA_TOPIC:notifications}
       retries: 2
 
 eureka:
@@ -39,4 +39,4 @@ info:
 
 activate:
   endpoint:
-    url: http://localhost:9595/verify?code=%s # Endpoint to activate the user.
+    url: http://localhost:9595/users/verify?code=%s # Endpoint to activate the user.
