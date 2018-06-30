@@ -8,7 +8,7 @@ services:
       - 2181:2181
       - 9092:9092
     environment:
-      ADVERTISED_HOST: 192.168.99.100
+      ADVERTISED_HOST: kafkaserver
       ADVERTISED_PORT: 9092
     expose:
       - 9092
@@ -44,9 +44,8 @@ services:
       CONFIG_URI: http://config-service:8888
       EUREKA_URI: http://discovery-service:8761/eureka/
     restart: always
-    depends_on:
-      config-service:
-        condition: service_healthy
+    links:
+      - config-service
   auth-server:
     build: auth-server
     image: urban/auth-server
@@ -54,9 +53,8 @@ services:
     ports:
       - 9090
     restart: always
-    depends_on:
-      config-service:
-        condition: service_healthy
+    links:
+      - config-service
     environment:
       EUREKA_URI: http://discovery-service:8761/eureka/
       CONFIG_URI: http://config-service:8888
@@ -71,9 +69,8 @@ services:
       CONFIG_URI: http://config-service:8888
       OAUTH_URI: http://auth-server:9090/oauth/check_token
     restart: always
-    depends_on:
-      config-service:
-        condition: service_healthy
+    links:
+      - config-service
   api-gateway:
     build: api-gateway
     image: urban/api-gateway
@@ -83,9 +80,8 @@ services:
     environment:
       EUREKA_URI: http://discovery-service:8761/eureka/
     restart: always
-    depends_on:
-      config-service:
-        condition: service_healthy
+    links:
+      - config-service
   notification-service:
     build: notification-service
     image: urban/notification-service
